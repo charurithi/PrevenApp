@@ -1,0 +1,164 @@
+<div class="row">
+  <!--<div class="col-md-3">
+
+  </div>-->
+  <div class="descTitle col-md-12">Accident report</div>
+
+</div>
+<div class="row">
+    <div class="col-md-12 description"><p>Please select the city/type or hit submit to search the incidents</p></div>
+</div>
+<form name="accident" novalidate="novalidate" confirm-on-exit>
+<div class="row form-style">
+
+  <div class="col-md-4">
+    <div class="form-field margin-bottom" ng-class="{ 'has-error' : (accident.city.$invalid && accident.city.$touched)||(accident.city.$invalid && accident.$submitted) }">
+        <md-input-container >
+            <label>Select a city</label>
+            <md-select name="city" ng-model="form.city"   md-no-asterisk>
+              <md-option ng-repeat="row in city" ng-value="row.name">{{ row.name }}</md-option>
+            </md-select>
+        </md-input-container>
+      </div>
+      </div>
+
+    <div class="col-md-4">
+    <div class="form-field margin-bottom" ng-class="{ 'has-error' : (accident.type.$invalid && accident.type.$touched)||(accident.type.$invalid && accident.$submitted) }">
+        <md-input-container >
+            <label>Select a Type</label>
+            <md-select name="type" ng-model="form.type"    md-no-asterisk>
+              <md-option ng-repeat="row in type" ng-value="row.name">{{ row.name }}</md-option>
+            </md-select>
+        </md-input-container>
+      </div>
+      </div>
+    <div class="col-md-4">
+    <div class="row buttom-spacer" layout="row" layout-align="center">
+       <md-button id="submitBtn"  type="submit" class="col-md-6  btn1" ng-click="gotoSubmit(accident)" ><span class="button-letters"  >SUBMIT</span></md-button>
+
+    </div>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+</div>
+</form>
+
+<div class="feedback-form form-style feedback-table" ng-if="showResult">
+    <table class="table  table-striped" id="feedback_table_summ" >
+        <thead>
+            <tr>
+                <td class="table-header clickable-container">
+                    Incident Type
+
+                </td>
+                <td class="table-header clickable-container">
+                     Count
+
+                </td>
+                <td class="table-header clickable-container">
+                    Average Time
+
+                </td>
+            </tr>
+        </thead>
+        <tbody class="table-body">
+            <tr ng-repeat="row in summary  ">
+                <td class="padding-left-small" > {{ row.type }}</td>
+                <td class="padding-left-small" >{{row.count}}</td>
+                <td class="padding-left-small" >{{row.avg_time}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="feedback-form form-style feedback-table" ng-if="showResult">
+
+         <table class="table  table-striped" id="feedback_table" show-filter="true">
+             <thead>
+                <tr>
+                    <td  class="table-header clickable-container" style="width:20%">
+                            <a class="table-header" ng-click="sortType = 'type'; sortReverse = !sortReverse">Incident type
+                                      <span ng-show="sortReverse" class="glyphicon glyphicon-triangle-bottom"
+                                            ng-class="{grey_gly:sortType !='type'}"></span>
+                                      <span ng-show="!sortReverse" class="glyphicon glyphicon-triangle-top"
+                                            ng-class="{grey_gly:sortType !='type'}"></span>
+                            </a>
+                    </td>
+                    <td  class="table-header clickable-container" style="width:30%">
+                            <a class="table-header" ng-click="sortType = 'title'; sortReverse = !sortReverse">Title
+                                      <span ng-show="sortReverse" class="glyphicon glyphicon-triangle-bottom"
+                                            ng-class="{grey_gly:sortType !='title'}"></span>
+                                      <span ng-show="!sortReverse" class="glyphicon glyphicon-triangle-top"
+                                            ng-class="{grey_gly:sortType !='title'}"></span>
+                            </a>
+                    </td>
+                    <td  class="table-header clickable-container" style="width:20%">
+                            <a class="table-header" ng-click="sortType = 'occurred_at'; sortReverse = !sortReverse">Occurred Date
+                                      <span ng-show="sortReverse" class="glyphicon glyphicon-triangle-bottom"
+                                            ng-class="{grey_gly:sortType !='occurred_at'}"></span>
+                                      <span ng-show="!sortReverse" class="glyphicon glyphicon-triangle-top"
+                                            ng-class="{grey_gly:sortType !='occurred_at'}"></span>
+                            </a>
+                    </td>
+
+                    <td  class="table-header clickable-container" style="width:30%">
+                            <a class="table-header" ng-click="sortType = 'address'; sortReverse = !sortReverse">Address
+                                      <span ng-show="sortReverse" class="glyphicon glyphicon-triangle-bottom"
+                                            ng-class="{grey_gly:sortType !='address'}"></span>
+                                      <span ng-show="!sortReverse" class="glyphicon glyphicon-triangle-top"
+                                            ng-class="{grey_gly:sortType !='address'}"></span>
+                            </a>
+                    </td>
+
+                </tr>
+             </thead>
+            <tbody class="table-body">
+          <tr
+              ng-repeat="row in response |orderBy:sortType:sortReverse | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage  "
+              >
+            <!--<td>{{ row.report_id }}</td>-->
+            <td class="padding-left-small" > {{ row.type }}</td>
+            <td class="padding-left-small" >{{ row.title | cut:false:30:'...' }}
+              <md-tooltip md-direction="top" ng-if="row.title.length>30">{{row.title}}</md-tooltip>
+            </td>
+            <td class="padding-left-small" >{{row.occurred_at }}</td>
+
+            <td class="padding-left-small" >{{row.address| cut:false:75:'...' }}
+              <md-tooltip md-direction="top" ng-if="row.addres.length>75">{{row.address}}</md-tooltip>
+            </td>
+
+
+          </tr>
+          </tbody>
+
+        </table>
+
+     <div class="pagination-div" ng-if="pagination()">
+
+      <div class="pagination-custom">
+        <div class="pager-index ">
+          <a ng-click="firstPage()" ng-class="DisablePrevPage()" class="glyphicon glyphicon-step-backward"></a>
+        </div>
+        <div class="pager-index">
+          <a ng-click="prevPage()" ng-class="DisablePrevPage()" class="glyphicon glyphicon-chevron-left"> </a>
+        </div>
+        <div class="pager-index" ng-repeat="n in range()" ng-click="setPage(n)">
+          <a ng-class="{active: n == currentPage}">{{n+1}}</a>
+        </div>
+        <div class="pager-index">
+          <a ng-click="nextPage()" ng-class="DisableNextPage()" class="glyphicon glyphicon-chevron-right"> </a>
+
+        </div>
+        <div class="pager-index">
+          <a ng-click="lastPage()" ng-class="DisableNextPage()" class="glyphicon glyphicon-step-forward"></a>
+        </div>
+      </div>
+    </div>
+
+</div>
